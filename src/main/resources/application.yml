@@ -21,7 +21,7 @@ spring:
 # Backend service configuration
 backend:
   service:
-    url: ${BACKEND_SERVICE_URL:http://localhost:8081}
+    url: ${BACKEND_SERVICE_URL:http://localhost:8084}
     auth:
       username: ${BACKEND_SERVICE_AUTH_USERNAME:admin}
       password: ${BACKEND_SERVICE_AUTH_PASSWORD:admin123}
