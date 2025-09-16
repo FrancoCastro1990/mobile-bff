@@ -1,5 +1,7 @@
 package cl.duoc.bff.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import reactor.core.publisher.Mono;
 public class JwtAuthService {
 
     private final WebClient webClient;
+    private final ObjectMapper objectMapper;
 
     @Value("${backend.service.url}")
     private String backendUrl;
@@ -22,6 +25,7 @@ public class JwtAuthService {
 
     public JwtAuthService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
+        this.objectMapper = new ObjectMapper();
     }
 
     public Mono<String> getJwtToken() {
@@ -32,12 +36,12 @@ public class JwtAuthService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .map(response -> {
-                    // Assuming the response is a JSON with token field
-                    // In a real implementation, you'd parse the JSON properly
-                    if (response.contains("token")) {
-                        return response.split("\"token\":\"")[1].split("\"")[0];
+                    try {
+                        JsonNode jsonNode = objectMapper.readTree(response);
+                        return jsonNode.get("token").asText();
+                    } catch (Exception e) {
+                        throw new RuntimeException("Error parsing JWT token from backend response", e);
                     }
-                    return response;
                 });
     }
 }

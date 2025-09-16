@@ -41,9 +41,9 @@ curl http://localhost:8082/actuator/health
 
 ### Obtener Token para Mobile
 ```bash
-curl -X POST http://localhost:8084/auth/token \
+curl -X POST http://localhost:8082/auth/token \
   -H "Content-Type: application/json" \
-  -d '{"username":"mobile","password":"mobile123"}'
+  -d '{"user":"mobile","channel":"mobile"}'
 ```
 
 ### Usar Token en Requests
@@ -56,8 +56,11 @@ curl -H "Authorization: Bearer <TOKEN>" \
 
 ### 👤 **Información de Cuenta Simplificada**
 ```bash
+# Lista de cuentas simplificada
+GET /mobile/accounts
+
 # Datos esenciales de una cuenta específica
-GET /mobile/accounts/{accountId}
+GET /mobile/accounts/{accountNumber}
 
 # Ejemplo de respuesta simplificada:
 {
@@ -67,48 +70,14 @@ GET /mobile/accounts/{accountId}
 }
 ```
 
-### 📋 **Lista de Cuentas Mobile**
-```bash
-# Lista simplificada de cuentas
-GET /mobile/accounts
-
-# Con paginación optimizada para móviles
-GET /mobile/accounts?page=0&size=20
-```
-
-### 💳 **Transacciones Recientes**
-```bash
-# Últimas 10 transacciones (optimizado para móviles)
-GET /mobile/accounts/{accountId}/transactions?limit=10
-
-# Respuesta simplificada:
-[
-  {
-    "date": "2024-09-15",
-    "amount": -500.00,
-    "type": "WITHDRAWAL",
-    "description": "ATM Withdrawal"
-  }
-]
-```
-
-### 🔍 **Búsqueda Rápida**
-```bash
-# Búsqueda por nombre de propietario
-GET /mobile/accounts/search?owner=Diana
-
-# Búsqueda por número de cuenta
-GET /mobile/accounts/search?account=124
-```
-
 ## 🧪 **Ejemplos de Uso**
 
 ### 1. App Móvil - Dashboard Principal
 ```bash
 # Obtener datos para pantalla principal de app móvil
-TOKEN=$(curl -s -X POST http://localhost:8084/auth/token \
+TOKEN=$(curl -s -X POST http://localhost:8082/auth/token \
   -H "Content-Type: application/json" \
-  -d '{"username":"mobile","password":"mobile123"}' | jq -r '.token')
+  -d '{"user":"mobile","channel":"mobile"}' | jq -r '.token')
 
 # Lista de cuentas para selección rápida
 curl -H "Authorization: Bearer $TOKEN" \
@@ -117,10 +86,6 @@ curl -H "Authorization: Bearer $TOKEN" \
 # Detalles de cuenta seleccionada
 curl -H "Authorization: Bearer $TOKEN" \
   http://localhost:8082/mobile/accounts/124
-
-# Transacciones recientes
-curl -H "Authorization: Bearer $TOKEN" \
-  http://localhost:8082/mobile/accounts/124/transactions?limit=5
 ```
 
 ### 2. Verificación End-to-End Mobile
@@ -129,26 +94,21 @@ curl -H "Authorization: Bearer $TOKEN" \
 echo "=== VERIFICACIÓN MOBILE BFF ==="
 
 # 1. Obtener token mobile
-TOKEN=$(curl -s -X POST http://localhost:8084/auth/token \
+TOKEN=$(curl -s -X POST http://localhost:8082/auth/token \
   -H "Content-Type: application/json" \
-  -d '{"username":"mobile","password":"mobile123"}' | jq -r '.token')
+  -d '{"user":"mobile","channel":"mobile"}' | jq -r '.token')
 
 echo "Token mobile obtenido: ${TOKEN:0:50}..."
 
-# 2. Verificar datos simplificados
-echo "Datos simplificados de cuenta 124:"
-curl -s -H "Authorization: Bearer $TOKEN" \
-  http://localhost:8082/mobile/accounts/124 | jq '.'
-
-# 3. Verificar lista optimizada
+# 2. Verificar lista de cuentas
 echo "Lista de cuentas (primer elemento):"
 curl -s -H "Authorization: Bearer $TOKEN" \
   http://localhost:8082/mobile/accounts | jq '.[0]'
 
-# 4. Verificar transacciones limitadas
-echo "Últimas transacciones:"
+# 3. Verificar datos simplificados
+echo "Datos simplificados de cuenta 124:"
 curl -s -H "Authorization: Bearer $TOKEN" \
-  http://localhost:8082/mobile/accounts/124/transactions?limit=3 | jq '.'
+  http://localhost:8082/mobile/accounts/124 | jq '.'
 ```
 
 ## 🏗️ **Arquitectura Técnica**
@@ -241,9 +201,9 @@ curl -H "Accept-Encoding: gzip" \
 ### Error: Token Mobile Expirado
 ```bash
 # Renovar token específicamente para mobile
-curl -X POST http://localhost:8084/auth/token \
+curl -X POST http://localhost:8082/auth/token \
   -H "Content-Type: application/json" \
-  -d '{"username":"mobile","password":"mobile123"}'
+  -d '{"user":"mobile","channel":"mobile"}'
 ```
 
 ### Debug Mode
