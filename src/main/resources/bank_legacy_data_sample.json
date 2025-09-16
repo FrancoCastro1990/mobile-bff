@@ -1,0 +1,45 @@
+{
+  "accounts": [
+    {
+      "id": "A1001",
+      "owner": "Alice Perez",
+      "balance": 12500.5,
+      "currency": "CLP"
+    },
+    {
+      "id": "A1002",
+      "owner": "Bob Morales",
+      "balance": 502300.0,
+      "currency": "CLP"
+    },
+    {
+      "id": "A1003",
+      "owner": "Carlos Ruiz",
+      "balance": 7500.75,
+      "currency": "CLP"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "T2001",
+      "accountId": "A1001",
+      "type": "DEBIT",
+      "amount": 150.0,
+      "desc": "Coffee"
+    },
+    {
+      "id": "T2002",
+      "accountId": "A1002",
+      "type": "CREDIT",
+      "amount": 10000.0,
+      "desc": "Salary"
+    },
+    {
+      "id": "T2003",
+      "accountId": "A1001",
+      "type": "DEBIT",
+      "amount": 500.0,
+      "desc": "Groceries"
+    }
+  ]
+}

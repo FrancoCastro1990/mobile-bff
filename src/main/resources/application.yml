@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: "my-secret-key-123456789012345678901234567890"
+      client:
+        registration:
+          backend:
+            provider: backend-provider
+            client-id: mobile-bff
+            client-secret: mobile-secret
+            authorization-grant-type: client_credentials
+        provider:
+          backend-provider:
+            token-uri: ${BACKEND_SERVICE_URL:http://localhost:8081}/api/auth/login
+
+# Backend service configuration
+backend:
+  service:
+    url: ${BACKEND_SERVICE_URL:http://localhost:8081}
+    auth:
+      username: ${BACKEND_SERVICE_AUTH_USERNAME:admin}
+      password: ${BACKEND_SERVICE_AUTH_PASSWORD:admin123}
